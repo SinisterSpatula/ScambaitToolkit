@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +12,7 @@ namespace GiftcardGenerator
 {
     public partial class MainForm : Form
     {
+        
         Random rand = new Random();
 
         public MainForm()
@@ -22,6 +23,7 @@ namespace GiftcardGenerator
         private void MainForm_Load(object sender, EventArgs e)
         {
             cbCardType.SelectedIndex = 0;
+            //money.Controls[0].Visible = false;
         }
 
         private void GetType(string type)
@@ -41,7 +43,7 @@ namespace GiftcardGenerator
                     GenerateBassPro();
                     break;
                 case "google play":
-                    Generate(false);
+                    GenerateGoogle();
                     break;
                 case "target":
                     GenerateTarget();
@@ -70,7 +72,8 @@ namespace GiftcardGenerator
 
                 string pin = rand.Next(1000, 9999).ToString();
 
-                lbGiftcardNumbers.Items.Add(card + " | Pin: " + pin);
+                lbGiftcardNumbers.AppendText(card + "\tPin: " + pin + Environment.NewLine);
+                
             }
         }
 
@@ -89,28 +92,92 @@ namespace GiftcardGenerator
 
                 string pin = rand.Next(1000, 9999).ToString();
 
-                lbGiftcardNumbers.Items.Add(card + " | Pin: " + pin);
+                lbGiftcardNumbers.AppendText(card + "\tPin: " + pin + Environment.NewLine);
+                
             }
         }
 
+        /// <summary>
+        ///  Generate target gift cards using the rules to create the proper value that fits the chrome redeem extension.
+        /// </summary>
         private void GenerateTarget()
         {
-            for (int i = 0; i < 5; i++)
+            for (int cards = 0; cards < 5; cards++)
             {
+                //generate the giftcard number first
                 string card = "";
-                for (int j = 0; j < 5; j++)
+                for (int i = 0; i < 5; i++)
                 {
-                    card += rand.Next(100, 1000);
+                    card += rand.Next(10);
+                    card += rand.Next(10);
+                    card += rand.Next(10);
                     card += "-";
+
+                }
+                card = card.Remove(card.Length - 1, 1); //remove trailing -
+
+                //Now generate the pin
+                string pin = "";
+                for (int i = 0; i < 4; i++) { pin += rand.Next(10); } //first four numbers set.
+
+                //custom ammount less than 1,000 and not an even amount.
+                if (money.Value < 1000 && !money.Value.ToString().EndsWith("00"))
+                {
+                    pin += rand.Next(2, 10);
+                    pin += money.Value.ToString().PadLeft(3, '0');
+                }
+                else if (money.Value >= 1000)
+                {
+                    //thousands
+                    pin += "1";
+                    pin += money.Value.ToString()[0];
+                    pin += rand.Next(10);
+                    pin += rand.Next(10);
+                }
+                else
+                {
+                    //hundreds
+                    pin += "0";
+                    pin += money.Value.ToString()[0];
+                    pin += rand.Next(10);
+                    pin += rand.Next(10);
+
                 }
 
-                card = card.Remove(card.Length - 1, 1);
+                lbGiftcardNumbers.AppendText(card + "\tPin: " + pin + Environment.NewLine);
 
-                string pin = rand.Next(1000, 9999).ToString();
-                pin += " ";
-                pin += rand.Next(1000, 9999).ToString();
+            }
 
-                lbGiftcardNumbers.Items.Add(card + " | Pin: " + pin);
+        }
+
+        /// <summary>
+        /// Generate Google Play Cards that follow the rules of the chrome redeem extension
+        /// </summary>
+        private void GenerateGoogle()
+        {
+            for (int g = 0; g < 5; g++)
+            {
+                string value = money.Value.ToString().PadLeft(4, '0');
+                var builder = new StringBuilder("AAAAAAAAAAAAAAAA"); //cards are 16 characters.
+                for (int i = 0; i < builder.Length; ++i)
+                {
+                    builder[i] = GetLetter();
+                }
+
+                //replace random characters with our money value.
+                if (money.Value >= 1000) { builder[rand.Next(0, 4)] = value[0]; }
+                if (money.Value >= 100) { builder[rand.Next(4, 8)] = value[1]; }
+                if (money.Value >= 10) { builder[rand.Next(8, 12)] = value[2]; }
+                if (money.Value > 0) { builder[rand.Next(12, 16)] = value[3]; }
+
+                lbGiftcardNumbers.AppendText(builder.ToString() + Environment.NewLine);
+            }
+
+            char GetLetter()
+            {
+                char[] chars = "ABCDEFGHJKLMNPQRSTUVWXYZ".ToCharArray();
+                int i = rand.Next(chars.Length);
+                return chars[i];
             }
         }
 
@@ -120,14 +187,15 @@ namespace GiftcardGenerator
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    lbGiftcardNumbers.Items.Add(GenerateCard());
+                    lbGiftcardNumbers.AppendText(GenerateCard() + Environment.NewLine);
+                    //lbGiftcardNumbers.Items.Add(GenerateCard());
                 }
             }
             else
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    lbGiftcardNumbers.Items.Add(GenerateCard() + " | Pin: " + GeneratePin());
+                    lbGiftcardNumbers.AppendText(GenerateCard() + "\t\tPin: " + GeneratePin() + Environment.NewLine);
                 }
             }
         }
@@ -166,7 +234,7 @@ namespace GiftcardGenerator
 
         private void btnGenerate_Click(object sender, EventArgs e)
         {
-            lbGiftcardNumbers.Items.Clear();
+            lbGiftcardNumbers.Text = "";
             GetType(cbCardType.Text);
         }
     }
