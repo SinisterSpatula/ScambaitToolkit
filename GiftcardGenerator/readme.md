@@ -1,4 +1,4 @@
-https://github.com/SinisterSpatula/ScambaitToolkit/raw/master/GiftcardGenerator/Capture.PNG
+![Screenshot Image](https://github.com/SinisterSpatula/ScambaitToolkit/raw/master/GiftcardGenerator/Capture.PNG)
 
 Updated the gift card generater to support target and google play giftcard redeem browser extensions.
 
