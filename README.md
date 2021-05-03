@@ -29,6 +29,7 @@ Feature list will likely get more sarcastic as items are added
    * Font scale level using Ctrl+[ and Ctrl+ ] but in reverse.
    
 1. Giftcard Generator
+   * Updated: now works with google chrome extensions for target and google play.
    * Very simple random number generator.
    * Just creates "realistic" gift card number and pins.
    * i.e correct card number length and charset and pin length.
