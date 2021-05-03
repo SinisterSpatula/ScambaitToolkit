@@ -1,3 +1,6 @@
+##  In my fork, I updated the giftcard generator to work with the google chrome extensions for target and googleplay.
+
+
 # ScambaitToolkit
 C# .Net Framework scambait toolkit. Replacements for standard Windows programs with a little extra added ;)
 
