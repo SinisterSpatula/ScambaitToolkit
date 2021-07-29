@@ -1,4 +1,4 @@
-##  In my fork, I updated the giftcard generator to work with the google chrome extensions for target and googleplay.
+##  In my fork, I updated the giftcard generator to work with the google chrome extensions for target and googleplay.  Please note: most of this repository isn't my work, I just worked on the Gift-card generator portion.  The original author's repository is here: https://github.com/ConnorBaxter/ScambaitToolkit
 
 
 # ScambaitToolkit
